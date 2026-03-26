@@ -317,26 +317,45 @@
 </div>
 
 <script>
-const P = 'https://corsproxy.io/?';
 let tid = 0, page = 1, busy = false;
 
 const N = n => !n?'0':n>=10000?(n/10000).toFixed(1)+'万':n;
 const D = s => !s?'':Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
 
 async function load(t, p=1) {
+    // 直接请求B站API（无需代理，B站允许跨域）
     const url = t===0
         ? `https://api.bilibili.com/x/web-interface/popular?ps=40&pn=${p}`
         : `https://api.bilibili.com/x/web-interface/newlist?rid=${t}&ps=40&pn=${p}&type=0`;
-    const r = await fetch(P + encodeURIComponent(url));
-    const j = await r.json();
-    return t===0 ? (j.data?.list||[]) : (j.data?.archives||[]);
+    try {
+        const r = await fetch(url, {
+            credentials: 'include',
+            headers: {
+                'Referer': 'https://www.bilibili.com',
+                'Origin': 'https://www.bilibili.com'
+            }
+        });
+        const j = await r.json();
+        if (j.code === 0) return t===0 ? (j.data?.list||[]) : (j.data?.archives||[]);
+    } catch {}
+
+    // 备用：通过 allorigins 代理
+    try {
+        const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+        const r = await fetch(proxy);
+        const d = await r.json();
+        const j = JSON.parse(d.contents);
+        if (j.code === 0) return t===0 ? (j.data?.list||[]) : (j.data?.archives||[]);
+    } catch {}
+
+    throw new Error('failed');
 }
 
 function card(v) {
     const t = (v.title||'').replace(/['"<>]/g,'');
     return `<div class="card" onclick="play('${v.bvid}','${t}')">
         <div class="thumb">
-            <img src="https://images.weserv.nl/?url=${encodeURIComponent(v.pic)}&w=320&h=180&fit=cover&output=webp" loading="lazy" onerror="this.style.display='none'">
+            <img src="${v.pic}@320w_200h_1c.webp" loading="lazy" onerror="this.style.display='none'">
             <div class="play-mask"><div class="play-icon">▶</div></div>
             <div class="dur">${D(v.duration)}</div>
         </div>
