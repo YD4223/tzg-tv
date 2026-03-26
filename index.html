@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>童真阁</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📺</text></svg>">
     <style>
         :root {
             --bg: #f7f8fa;
@@ -18,6 +19,20 @@
             --radius: 16px;
             --shadow: 0 2px 12px rgba(0,0,0,0.06);
             --shadow-hover: 0 8px 30px rgba(0,0,0,0.12);
+            --top-bg: rgba(247,248,250,0.92);
+            --bnav-bg: rgba(247,248,250,0.96);
+        }
+        html.dark {
+            --bg: #111318;
+            --card: #1a1d24;
+            --border: #1e2028;
+            --text: #f0f0f0;
+            --text2: #9ca3af;
+            --text3: #4b5563;
+            --shadow: 0 2px 12px rgba(0,0,0,0.3);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.5);
+            --top-bg: rgba(17,19,24,0.92);
+            --bnav-bg: rgba(17,19,24,0.96);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -30,7 +45,7 @@
         /* ===== 顶部 ===== */
         .top {
             position: sticky; top: 0; z-index: 200;
-            background: rgba(247,248,250,0.92);
+            background: var(--top-bg);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
             padding: 0 24px;
@@ -57,8 +72,14 @@
         }
         .search-bar input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,110,247,0.1); }
         .search-bar input::placeholder { color: var(--text3); }
-        .search-bar button {
-            position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%;
+            border: 1.5px solid var(--border);
+            background: var(--card); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; flex-shrink: 0; transition: all 0.2s;
+        }
+        .theme-btn:hover { border-color: var(--accent); }
             background: var(--accent); border: none; color: #fff;
             width: 32px; height: 32px; border-radius: 50%;
             cursor: pointer; font-size: 0.85rem;
@@ -267,7 +288,7 @@
         /* ===== 底部导航 ===== */
         .bnav {
             position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
-            background: rgba(247,248,250,0.96);
+            background: var(--bnav-bg);
             backdrop-filter: blur(20px);
             border-top: 1px solid var(--border);
             display: flex; padding: 6px 0 max(6px, env(safe-area-inset-bottom));
@@ -309,6 +330,7 @@
             <input type="text" id="si" placeholder="搜索视频、UP主..." onkeydown="if(event.key==='Enter')search()">
             <button onclick="search()">🔍</button>
         </div>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="切换主题">🌙</button>
     </div>
     <div class="tabs" id="tabs">
         <div class="tab on" onclick="tab(this,0)">🔥 热门</div>
@@ -368,24 +390,50 @@
 </div>
 
 <script>
-// ===== B站 API（含 Cookie）=====
-const BILI = 'https://api.bilibili.com';
+// ===== B站 API =====
 let tid = 0, pg = 1, busy = false;
 
 const N = n => !n ? '0' : n >= 10000 ? (n/10000).toFixed(1)+'万' : n;
 const D = s => !s ? '' : Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
 
 async function fetchBili(t, p=1) {
-    const url = t===0
-        ? `${BILI}/x/web-interface/popular?ps=40&pn=${p}`
-        : `${BILI}/x/web-interface/newlist?rid=${t}&ps=40&pn=${p}&type=0`;
-    const r = await fetch(url, {
-        credentials: 'include',
-        headers: { 'Referer': 'https://www.bilibili.com' }
-    });
-    const j = await r.json();
-    if (j.code !== 0) throw new Error(j.message||'请求失败');
-    return t===0 ? (j.data?.list||[]) : (j.data?.archives||[]);
+    const path = t===0
+        ? `/x/web-interface/popular?ps=40&pn=${p}`
+        : `/x/web-interface/newlist?rid=${t}&ps=40&pn=${p}&type=0`;
+
+    // 方案1：直接请求（同域或已登录B站时有效）
+    try {
+        const r = await fetch('https://api.bilibili.com' + path, {
+            credentials: 'include',
+            headers: { 'Referer': 'https://www.bilibili.com' },
+            signal: AbortSignal.timeout(5000)
+        });
+        const j = await r.json();
+        if (j.code === 0) return t===0 ? (j.data?.list||[]) : (j.data?.archives||[]);
+    } catch {}
+
+    // 方案2：allorigins 代理
+    try {
+        const url = 'https://api.bilibili.com' + path;
+        const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, {
+            signal: AbortSignal.timeout(10000)
+        });
+        const d = await r.json();
+        const j = JSON.parse(d.contents);
+        if (j.code === 0) return t===0 ? (j.data?.list||[]) : (j.data?.archives||[]);
+    } catch {}
+
+    // 方案3：corsproxy
+    try {
+        const url = 'https://api.bilibili.com' + path;
+        const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`, {
+            signal: AbortSignal.timeout(10000)
+        });
+        const j = await r.json();
+        if (j.code === 0) return t===0 ? (j.data?.list||[]) : (j.data?.archives||[]);
+    } catch {}
+
+    throw new Error('加载失败');
 }
 
 function itemCard(v) {
@@ -534,20 +582,32 @@ const SAT=[
     {n:'辽宁卫视',e:'❄️',u:'https://www.yangshipin.cn/tv/home?cid=708'},
 ];
 const KIDS=[
-    {n:'CCTV少儿',e:'🧒',u:'https://www.yangshipin.cn/tv/home?cid=580'},
+    {n:'CCTV少儿',e:'🧒',u:'https://tv.cctv.com/live/cctvchild/'},
     {n:'金鹰卡通',e:'🦅',u:'https://www.mgtv.com/live/4/'},
-    {n:'哈哈炫动',e:'🎠',u:'https://www.bilibili.com/v/animation/'},
-    {n:'卡酷动画',e:'🎪',u:'http://www.kakutv.com.cn/live/'},
+    {n:'卡酷动画',e:'🎪',u:'https://tv.cctv.com/live/cctv14/'},
     {n:'B站动漫',e:'🎌',u:'https://www.bilibili.com/anime/'},
+    {n:'B站儿童',e:'👶',u:'https://www.bilibili.com/v/knowledge/'},
+    {n:'西瓜少儿',e:'🍉',u:'https://www.ixigua.com/channel/cartoon/'},
+    {n:'央视少儿',e:'📺',u:'https://www.yangshipin.cn/tv/home?cid=580'},
     {n:'优酷少儿',e:'🌈',u:'https://youku.com/channel/webchild'},
-    {n:'爱奇艺少儿',e:'⭐',u:'https://www.iqiyi.com/kids/'},
-    {n:'腾讯少儿',e:'🐧',u:'https://v.qq.com/channel/cartoon'},
 ];
 const lc = c => `<div class="lcard" onclick="window.open('${c.u}','_blank')">
     <span class="lemo">${c.e}</span>
     <div class="lname">${c.n}</div>
     <div class="ltag">直播中</div>
 </div>`;
+
+// 主题切换
+function toggleTheme() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+}
+// 初始化主题
+if (localStorage.getItem('theme') === 'dark') {
+    document.documentElement.classList.add('dark');
+    document.getElementById('themeBtn').textContent = '☀️';
+}
 
 // 初始化
 tab(null, 0);
