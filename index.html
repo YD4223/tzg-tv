@@ -2,368 +2,406 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>童真阁</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
+        :root {
+            --bg: #f7f8fa;
+            --card: #ffffff;
+            --border: #e8eaed;
+            --text: #1a1a2e;
+            --text2: #5a6070;
+            --text3: #9ca3b8;
+            --accent: #4f6ef7;
+            --accent2: #6c8aff;
+            --live: #ef4444;
+            --radius: 16px;
+            --shadow: 0 2px 12px rgba(0,0,0,0.06);
+            --shadow-hover: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
-            background: #111318;
-            color: #f0f0f0;
-            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'SF Pro Display', sans-serif;
+            background: var(--bg); color: var(--text);
+            min-height: 100vh; -webkit-font-smoothing: antialiased;
         }
 
         /* ===== 顶部 ===== */
-        .header {
-            position: sticky; top: 0; z-index: 100;
-            background: #111318;
-            border-bottom: 1px solid #1e2028;
-            padding: 14px 16px 0;
+        .top {
+            position: sticky; top: 0; z-index: 200;
+            background: rgba(247,248,250,0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
         }
-
-        .header-row {
-            display: flex; align-items: center; gap: 12px;
-            margin-bottom: 12px;
+        .top-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; gap: 20px;
+            height: 64px;
         }
-
-        .logo {
-            font-size: 1.2rem; font-weight: 700;
-            color: #fff; letter-spacing: 1px;
-            white-space: nowrap;
+        .brand {
+            font-size: 1.3rem; font-weight: 800; letter-spacing: -0.3px;
+            color: var(--text); white-space: nowrap;
         }
-        .logo span {
-            color: #6366f1;
+        .brand b { color: var(--accent); }
+        .search-bar {
+            flex: 1; max-width: 480px; position: relative;
         }
-
-        .search {
-            flex: 1; display: flex; align-items: center; gap: 8px;
-            background: #1e2028; border-radius: 10px;
-            padding: 9px 14px; border: 1px solid #2a2d38;
-            transition: border-color 0.2s;
+        .search-bar input {
+            width: 100%; padding: 10px 44px 10px 18px;
+            border: 1.5px solid var(--border); border-radius: 100px;
+            background: var(--card); font-size: 0.88rem; outline: none;
+            color: var(--text); transition: all 0.2s;
+            font-family: inherit;
         }
-        .search:focus-within { border-color: #6366f1; }
-        .search input {
-            flex: 1; background: none; border: none;
-            color: #f0f0f0; font-size: 0.88rem; outline: none;
+        .search-bar input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,110,247,0.1); }
+        .search-bar input::placeholder { color: var(--text3); }
+        .search-bar button {
+            position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+            background: var(--accent); border: none; color: #fff;
+            width: 32px; height: 32px; border-radius: 50%;
+            cursor: pointer; font-size: 0.85rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
         }
-        .search input::placeholder { color: #4a4d5a; }
-        .search-btn { color: #4a4d5a; cursor: pointer; font-size: 0.9rem; border: none; background: none; }
-        .search:focus-within .search-btn { color: #6366f1; }
+        .search-bar button:hover { background: var(--accent2); }
 
         /* 分类 */
         .tabs {
+            max-width: 1200px; margin: 0 auto;
             display: flex; gap: 4px; overflow-x: auto;
-            padding-bottom: 12px;
+            padding: 10px 0 12px;
+            scrollbar-width: none;
         }
         .tabs::-webkit-scrollbar { display: none; }
-
         .tab {
-            padding: 6px 14px; border-radius: 8px;
+            padding: 6px 16px; border-radius: 100px;
             font-size: 0.82rem; font-weight: 500;
             cursor: pointer; white-space: nowrap; flex-shrink: 0;
-            color: #6b7280; background: transparent;
-            transition: all 0.2s; border: none;
+            border: 1.5px solid transparent;
+            color: var(--text2); background: transparent;
+            transition: all 0.2s;
         }
-        .tab:hover { color: #d1d5db; background: #1e2028; }
-        .tab.active {
-            background: #6366f1;
-            color: #fff;
+        .tab:hover { color: var(--text); background: var(--card); }
+        .tab.on {
+            background: var(--accent); color: #fff;
+            box-shadow: 0 2px 10px rgba(79,110,247,0.3);
         }
 
-        /* ===== 内容区 ===== */
-        .content { padding: 16px; padding-bottom: 80px; }
+        /* ===== 主内容 ===== */
+        .page {
+            max-width: 1200px; margin: 0 auto;
+            padding: 24px 24px 100px;
+        }
+
+        .page-title {
+            font-size: 1rem; font-weight: 700; color: var(--text);
+            margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+        }
+        .page-title .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--accent);
+        }
 
         /* 视频网格 */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
-            gap: 14px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
         }
 
-        .card {
-            cursor: pointer; border-radius: 10px; overflow: hidden;
-            background: #1a1d24;
-            transition: transform 0.2s, box-shadow 0.2s;
+        .item {
+            cursor: pointer; border-radius: var(--radius); overflow: hidden;
+            background: var(--card); border: 1px solid var(--border);
+            transition: all 0.25s; box-shadow: var(--shadow);
         }
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        .item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(79,110,247,0.2);
         }
-        .card:active { transform: scale(0.98); }
+        .item:active { transform: scale(0.98); }
 
         .thumb {
-            width: 100%; aspect-ratio: 16/9;
             position: relative; overflow: hidden;
-            background: #1e2028;
+            aspect-ratio: 16/9; background: #f0f2f5;
         }
         .thumb img {
             width: 100%; height: 100%; object-fit: cover;
-            display: block; transition: transform 0.3s;
+            display: block; transition: transform 0.4s;
         }
-        .card:hover .thumb img { transform: scale(1.04); }
+        .item:hover .thumb img { transform: scale(1.05); }
 
-        .play-mask {
+        .play {
             position: absolute; inset: 0;
-            background: rgba(0,0,0,0.35);
             display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.3);
             opacity: 0; transition: opacity 0.2s;
         }
-        .card:hover .play-mask { opacity: 1; }
-        .play-icon {
-            width: 42px; height: 42px; border-radius: 50%;
-            background: rgba(255,255,255,0.92);
+        .item:hover .play { opacity: 1; }
+        .play-inner {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: rgba(255,255,255,0.95);
             display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; padding-left: 3px; color: #111;
+            font-size: 1.1rem; padding-left: 3px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+        .vdur {
+            position: absolute; bottom: 8px; right: 8px;
+            background: rgba(0,0,0,0.72);
+            color: #fff; padding: 2px 7px; border-radius: 5px;
+            font-size: 0.7rem; font-weight: 600;
+            backdrop-filter: blur(4px);
         }
 
-        .dur {
-            position: absolute; bottom: 6px; right: 7px;
-            background: rgba(0,0,0,0.75);
-            padding: 2px 6px; border-radius: 4px;
-            font-size: 0.68rem; color: #fff; font-weight: 500;
+        .detail { padding: 12px 14px 14px; }
+        .vtitle {
+            font-size: 0.85rem; font-weight: 500; color: var(--text);
+            line-height: 1.5; display: -webkit-box;
+            -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            overflow: hidden; margin-bottom: 10px; min-height: 2.8em;
         }
-
-        .info { padding: 10px 10px 11px; }
-        .title {
-            font-size: 0.8rem; line-height: 1.45; color: #e2e8f0;
-            display: -webkit-box; -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical; overflow: hidden;
-            margin-bottom: 7px;
-        }
-        .meta {
+        .vmeta {
             display: flex; align-items: center; justify-content: space-between;
         }
-        .up { font-size: 0.7rem; color: #6b7280; }
-        .views { font-size: 0.7rem; color: #6b7280; }
+        .vup { font-size: 0.72rem; color: var(--text3); }
+        .vv { font-size: 0.72rem; color: var(--text3); }
 
         /* 加载/错误 */
         .state {
-            grid-column: 1/-1; padding: 60px 0;
-            display: flex; flex-direction: column; align-items: center; gap: 14px;
-            color: #4a4d5a;
+            grid-column: 1/-1; padding: 80px 0;
+            display: flex; flex-direction: column; align-items: center; gap: 16px;
+            color: var(--text3);
         }
         .spin {
-            width: 32px; height: 32px; border-radius: 50%;
-            border: 2.5px solid #2a2d38;
-            border-top-color: #6366f1;
+            width: 36px; height: 36px; border-radius: 50%;
+            border: 2.5px solid #e8eaed;
+            border-top-color: var(--accent);
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .state-text { font-size: 0.85rem; }
+        .st { font-size: 0.88rem; }
         .retry {
-            padding: 9px 22px; background: #6366f1;
-            border: none; color: #fff; border-radius: 8px;
-            cursor: pointer; font-size: 0.85rem;
+            padding: 10px 24px; background: var(--accent);
+            border: none; color: #fff; border-radius: 100px;
+            cursor: pointer; font-size: 0.85rem; font-weight: 600;
+            box-shadow: 0 2px 10px rgba(79,110,247,0.3);
         }
 
         /* ===== 直播页 ===== */
-        .live-wrap { display: none; }
-        .live-section { margin-bottom: 28px; }
-        .sec-title {
-            font-size: 0.88rem; font-weight: 600; color: #9ca3af;
-            text-transform: uppercase; letter-spacing: 1px;
-            margin-bottom: 12px; padding-left: 2px;
+        .live-page { display: none; }
+        .live-page.on { display: block; }
+        .live-row { margin-bottom: 28px; }
+        .live-title {
+            font-size: 0.95rem; font-weight: 700;
+            color: var(--text); margin-bottom: 14px;
+            display: flex; align-items: center; gap: 8px;
         }
+        .live-title .bar {
+            width: 4px; height: 18px; border-radius: 2px;
+            background: var(--live);
+        }
+        .live-title.blue .bar { background: var(--accent); }
+        .live-title.kids .bar { background: #f59e0b; }
+        .live-count { font-size: 0.72rem; color: var(--text3); font-weight: 400; margin-left: 4px; }
         .live-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
         }
-        .live-card {
-            background: #1a1d24; border-radius: 10px;
-            padding: 16px 8px 13px; text-align: center;
-            cursor: pointer; transition: all 0.2s;
-            border: 1px solid #1e2028;
+        .lcard {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 20px 10px 16px;
+            text-align: center; cursor: pointer; transition: all 0.2s;
+            box-shadow: var(--shadow);
         }
-        .live-card:hover {
-            background: #1e2028; border-color: #6366f1;
-            transform: translateY(-2px);
+        .lcard:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(239,68,68,0.2);
         }
-        .live-card:active { transform: scale(0.97); }
-        .live-em { font-size: 1.8rem; margin-bottom: 7px; display: block; }
-        .live-nm { font-size: 0.75rem; font-weight: 600; color: #d1d5db; margin-bottom: 6px; }
-        .live-tag {
-            display: inline-flex; align-items: center; gap: 3px;
-            font-size: 0.6rem; color: #f87171;
-            background: rgba(239,68,68,0.1);
-            padding: 2px 7px; border-radius: 6px;
+        .lcard:active { transform: scale(0.97); }
+        .lemo { font-size: 2.2rem; margin-bottom: 8px; display: block; }
+        .lname { font-size: 0.8rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+        .ltag {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 10px; border-radius: 100px;
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.15);
+            font-size: 0.65rem; color: var(--live); font-weight: 700;
         }
-        .live-dot {
-            width: 4px; height: 4px; border-radius: 50%;
-            background: #ef4444; animation: blink 1.2s infinite;
+        .ltag::before {
+            content: ''; width: 5px; height: 5px; border-radius: 50%;
+            background: var(--live); animation: bl 1.2s infinite;
         }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+        @keyframes bl { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
         /* ===== 播放器 ===== */
         .player {
             display: none; position: fixed; inset: 0;
             background: #000; z-index: 500; flex-direction: column;
         }
-        .player.show { display: flex; }
-
-        .player-bar {
+        .player.on { display: flex; }
+        .pbar {
             display: flex; align-items: center; gap: 12px;
-            padding: 12px 16px; background: #111318;
-            border-bottom: 1px solid #1e2028; flex-shrink: 0;
+            padding: 12px 20px; background: #111;
+            border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;
         }
         .back {
             display: flex; align-items: center; gap: 5px;
-            background: #1e2028; border: none; color: #d1d5db;
-            padding: 7px 14px; border-radius: 8px;
+            background: rgba(255,255,255,0.1); border: none;
+            color: #ccc; padding: 7px 14px; border-radius: 8px;
             cursor: pointer; font-size: 0.82rem; font-family: inherit;
             transition: background 0.2s;
         }
-        .back:hover { background: #2a2d38; }
-        .player-ttl {
+        .back:hover { background: rgba(255,255,255,0.18); color: #fff; }
+        .pttl {
             flex: 1; font-size: 0.88rem; font-weight: 500;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-            color: #e2e8f0;
+            color: #ccc;
         }
-        .player-body {
-            flex: 1; display: flex; align-items: center; justify-content: center;
-        }
-        .player-body iframe {
-            width: 100%; height: 100%; border: none;
-        }
+        .pbody { flex: 1; display: flex; align-items: center; justify-content: center; }
+        .pbody iframe { width: 100%; height: 100%; border: none; }
 
         /* ===== 底部导航 ===== */
-        .nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: #111318; border-top: 1px solid #1e2028;
-            display: flex; padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+        .bnav {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+            background: rgba(247,248,250,0.96);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            display: flex; padding: 6px 0 max(6px, env(safe-area-inset-bottom));
         }
-        .nav-item {
+        .bnav-item {
             flex: 1; display: flex; flex-direction: column;
-            align-items: center; gap: 3px;
-            cursor: pointer; color: #4a4d5a;
-            transition: color 0.2s; padding: 4px 0;
+            align-items: center; gap: 2px; cursor: pointer;
+            color: var(--text3); padding: 5px 0; transition: color 0.2s;
         }
-        .nav-item.on { color: #6366f1; }
-        .nav-item:active { opacity: 0.7; }
-        .ni { font-size: 1.25rem; }
-        .nl { font-size: 0.6rem; font-weight: 500; }
+        .bnav-item.on { color: var(--accent); }
+        .bnav-item:active { opacity: 0.7; }
+        .bni { font-size: 1.3rem; }
+        .bnl { font-size: 0.6rem; font-weight: 500; }
 
-        @media (max-width: 480px) {
-            .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .live-grid { grid-template-columns: repeat(3, 1fr); }
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .top { padding: 0 16px; }
+            .top-inner { height: 58px; gap: 12px; }
+            .brand { font-size: 1.1rem; }
+            .search-bar { max-width: none; }
+            .page { padding: 16px 16px 90px; }
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .live-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            .lcard { padding: 14px 6px 12px; }
+            .lemo { font-size: 1.8rem; }
         }
-        @media (min-width: 900px) {
-            .grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
-            .content { padding: 20px 28px 90px; }
+        @media (min-width: 1100px) {
+            .grid { grid-template-columns: repeat(5, 1fr); }
         }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <div class="header-row">
-        <div class="logo">童<span>真</span>阁</div>
-        <div class="search">
+<!-- 顶部 -->
+<div class="top">
+    <div class="top-inner">
+        <div class="brand">童<b>真</b>阁</div>
+        <div class="search-bar">
             <input type="text" id="si" placeholder="搜索视频、UP主..." onkeydown="if(event.key==='Enter')search()">
-            <button class="search-btn" onclick="search()">搜索</button>
+            <button onclick="search()">🔍</button>
         </div>
     </div>
     <div class="tabs" id="tabs">
-        <button class="tab active" onclick="go(this,0)">🔥 热门</button>
-        <button class="tab" onclick="goLive(this)">📡 直播</button>
-        <button class="tab" onclick="go(this,138)">😂 搞笑</button>
-        <button class="tab" onclick="go(this,129)">💃 美女</button>
-        <button class="tab" onclick="go(this,1)">🎌 动漫</button>
-        <button class="tab" onclick="go(this,4)">🎮 游戏</button>
-        <button class="tab" onclick="go(this,3)">🎵 音乐</button>
-        <button class="tab" onclick="go(this,160)">🌟 生活</button>
-        <button class="tab" onclick="go(this,188)">👶 儿童</button>
-        <button class="tab" onclick="go(this,223)">🍜 美食</button>
-        <button class="tab" onclick="go(this,217)">🏆 体育</button>
+        <div class="tab on" onclick="tab(this,0)">🔥 热门</div>
+        <div class="tab" onclick="tabLive(this)">📡 直播</div>
+        <div class="tab" onclick="tab(this,138)">😂 搞笑</div>
+        <div class="tab" onclick="tab(this,129)">💃 美女</div>
+        <div class="tab" onclick="tab(this,1)">🎌 动漫</div>
+        <div class="tab" onclick="tab(this,4)">🎮 游戏</div>
+        <div class="tab" onclick="tab(this,3)">🎵 音乐</div>
+        <div class="tab" onclick="tab(this,160)">🌟 生活</div>
+        <div class="tab" onclick="tab(this,188)">👶 儿童</div>
+        <div class="tab" onclick="tab(this,223)">🍜 美食</div>
+        <div class="tab" onclick="tab(this,217)">🏆 体育</div>
     </div>
 </div>
 
-<div class="content">
-    <div class="grid" id="grid">
-        <div class="state"><div class="spin"></div><div class="state-text">加载中...</div></div>
+<!-- 内容 -->
+<div class="page" id="mainPage">
+    <div class="page-title"><div class="dot"></div>推荐视频</div>
+    <div class="grid" id="grid"></div>
+</div>
+
+<!-- 直播页 -->
+<div class="page live-page" id="livePageEl">
+    <div class="live-row">
+        <div class="live-title"><div class="bar"></div>央视频道<div class="live-count">12个频道</div></div>
+        <div class="live-grid" id="cg"></div>
     </div>
-    <div class="live-wrap" id="liveWrap">
-        <div class="live-section">
-            <div class="sec-title">央视频道</div>
-            <div class="live-grid" id="cg"></div>
-        </div>
-        <div class="live-section">
-            <div class="sec-title">卫视频道</div>
-            <div class="live-grid" id="sg"></div>
-        </div>
+    <div class="live-row">
+        <div class="live-title blue"><div class="bar"></div>卫视频道<div class="live-count">12个频道</div></div>
+        <div class="live-grid" id="sg"></div>
+    </div>
+    <div class="live-row">
+        <div class="live-title kids"><div class="bar"></div>少儿动画<div class="live-count">8个频道</div></div>
+        <div class="live-grid" id="kg"></div>
     </div>
 </div>
 
 <!-- 播放器 -->
 <div class="player" id="player">
-    <div class="player-bar">
+    <div class="pbar">
         <button class="back" onclick="closeP()">← 返回</button>
-        <div class="player-ttl" id="ptitle"></div>
+        <div class="pttl" id="pttl"></div>
     </div>
-    <div class="player-body">
-        <iframe id="pframe" allowfullscreen allow="autoplay;fullscreen"></iframe>
+    <div class="pbody">
+        <iframe id="pfr" allowfullscreen allow="autoplay; fullscreen; picture-in-picture"></iframe>
     </div>
 </div>
 
 <!-- 底部导航 -->
-<div class="nav">
-    <div class="nav-item on" id="n0" onclick="go(null,0,'n0')"><span class="ni">🔥</span><span class="nl">热门</span></div>
-    <div class="nav-item" id="n1" onclick="goLive(null,'n1')"><span class="ni">📡</span><span class="nl">直播</span></div>
-    <div class="nav-item" id="n2" onclick="go(null,138,'n2')"><span class="ni">😂</span><span class="nl">搞笑</span></div>
-    <div class="nav-item" id="n3" onclick="go(null,129,'n3')"><span class="ni">💃</span><span class="nl">美女</span></div>
-    <div class="nav-item" id="n4" onclick="go(null,1,'n4')"><span class="ni">🎌</span><span class="nl">动漫</span></div>
+<div class="bnav">
+    <div class="bnav-item on" id="b0" onclick="tabB(0,'b0')"><span class="bni">🔥</span><span class="bnl">热门</span></div>
+    <div class="bnav-item" id="b1" onclick="tabLB('b1')"><span class="bni">📡</span><span class="bnl">直播</span></div>
+    <div class="bnav-item" id="b2" onclick="tabB(138,'b2')"><span class="bni">😂</span><span class="bnl">搞笑</span></div>
+    <div class="bnav-item" id="b3" onclick="tabB(129,'b3')"><span class="bni">💃</span><span class="bnl">美女</span></div>
+    <div class="bnav-item" id="b4" onclick="tabB(1,'b4')"><span class="bni">🎌</span><span class="bnl">动漫</span></div>
 </div>
 
 <script>
-let tid = 0, page = 1, busy = false;
+// ===== B站 API（含 Cookie）=====
+const BILI = 'https://api.bilibili.com';
+let tid = 0, pg = 1, busy = false;
 
-const N = n => !n?'0':n>=10000?(n/10000).toFixed(1)+'万':n;
-const D = s => !s?'':Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+const N = n => !n ? '0' : n >= 10000 ? (n/10000).toFixed(1)+'万' : n;
+const D = s => !s ? '' : Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
 
-async function load(t, p=1) {
-    // 直接请求B站API（无需代理，B站允许跨域）
+async function fetchBili(t, p=1) {
     const url = t===0
-        ? `https://api.bilibili.com/x/web-interface/popular?ps=40&pn=${p}`
-        : `https://api.bilibili.com/x/web-interface/newlist?rid=${t}&ps=40&pn=${p}&type=0`;
-    try {
-        const r = await fetch(url, {
-            credentials: 'include',
-            headers: {
-                'Referer': 'https://www.bilibili.com',
-                'Origin': 'https://www.bilibili.com'
-            }
-        });
-        const j = await r.json();
-        if (j.code === 0) return t===0 ? (j.data?.list||[]) : (j.data?.archives||[]);
-    } catch {}
-
-    // 备用：通过 allorigins 代理
-    try {
-        const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-        const r = await fetch(proxy);
-        const d = await r.json();
-        const j = JSON.parse(d.contents);
-        if (j.code === 0) return t===0 ? (j.data?.list||[]) : (j.data?.archives||[]);
-    } catch {}
-
-    throw new Error('failed');
+        ? `${BILI}/x/web-interface/popular?ps=40&pn=${p}`
+        : `${BILI}/x/web-interface/newlist?rid=${t}&ps=40&pn=${p}&type=0`;
+    const r = await fetch(url, {
+        credentials: 'include',
+        headers: { 'Referer': 'https://www.bilibili.com' }
+    });
+    const j = await r.json();
+    if (j.code !== 0) throw new Error(j.message||'请求失败');
+    return t===0 ? (j.data?.list||[]) : (j.data?.archives||[]);
 }
 
-function card(v) {
+function itemCard(v) {
     const t = (v.title||'').replace(/['"<>]/g,'');
-    return `<div class="card" onclick="play('${v.bvid}','${t}')">
-        <div class="thumb">
-            <img src="${v.pic}@320w_200h_1c.webp" loading="lazy" onerror="this.style.display='none'">
-            <div class="play-mask"><div class="play-icon">▶</div></div>
-            <div class="dur">${D(v.duration)}</div>
+    const pic = v.pic || '';
+    const img = pic ? `<img src="${pic}@320w_200h" loading="lazy" onerror="this.parentNode.style.background='#f0f2f5'">` : '';
+    return `<div class="item" onclick="play('${v.bvid}','${t}')">
+        <div class="thumb">${img}
+            <div class="play"><div class="play-inner">▶</div></div>
+            <div class="vdur">${D(v.duration)}</div>
         </div>
-        <div class="info">
-            <div class="title">${v.title}</div>
-            <div class="meta">
-                <span class="up">${v.owner?.name||''}</span>
-                <span class="views">👁 ${N(v.stat?.view)}</span>
+        <div class="detail">
+            <div class="vtitle">${v.title}</div>
+            <div class="vmeta">
+                <div class="vup">${v.owner?.name||''}</div>
+                <div class="vv">👁 ${N(v.stat?.view)}</div>
             </div>
         </div>
     </div>`;
@@ -372,33 +410,81 @@ function card(v) {
 function render(list, add=false) {
     const g = document.getElementById('grid');
     if (!add) g.innerHTML = '';
-    if (!list.length && !add) { g.innerHTML = '<div class="state"><div class="state-text">暂无内容</div></div>'; return; }
-    g.insertAdjacentHTML('beforeend', list.map(card).join(''));
+    if (!list.length && !add) {
+        g.innerHTML = '<div class="state"><div class="st">暂无内容</div></div>';
+        return;
+    }
+    g.insertAdjacentHTML('beforeend', list.map(itemCard).join(''));
 }
 
-async function go(el, t, nid) {
-    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('on'));
-    if(el) el.classList.add('active');
-    if(nid) document.getElementById(nid)?.classList.add('on');
-    document.getElementById('grid').style.display = 'grid';
-    document.getElementById('liveWrap').style.display = 'none';
-    tid = t; page = 1;
-    document.getElementById('grid').innerHTML = '<div class="state"><div class="spin"></div><div class="state-text">加载中...</div></div>';
-    try { render(await load(t)); }
-    catch { document.getElementById('grid').innerHTML = `<div class="state"><div class="state-text">加载失败</div><button class="retry" onclick="go(null,${t})">重试</button></div>`; }
+async function loadTab(t, el, p=1) {
+    tid = t; pg = 1;
+    const g = document.getElementById('grid');
+    if (!add) g.innerHTML = '<div class="state"><div class="spin"></div><div class="st">加载中...</div></div>';
+    try {
+        const list = await fetchBili(t, 1);
+        render(list);
+    } catch(e) {
+        g.innerHTML = `<div class="state"><div class="st">加载失败，请检查网络</div><button class="retry" onclick="loadTab(${t},null,1)">重新加载</button></div>`;
+    }
+}
+
+function tab(el, t) {
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+    document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('on'));
+    if(el) el.classList.add('on');
+    document.getElementById('mainPage').style.display = 'block';
+    document.getElementById('livePageEl').classList.remove('on');
+    document.getElementById('grid').innerHTML = '<div class="state"><div class="spin"></div><div class="st">加载中...</div></div>';
+    tid = t; pg = 1;
+    fetchBili(t,1).then(render).catch(()=>{
+        document.getElementById('grid').innerHTML = `<div class="state"><div class="st">加载失败</div><button class="retry" onclick="tab(null,${t})">重试</button></div>`;
+    });
+}
+
+function tabB(t, id) {
+    document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('on'));
+    document.getElementById(id)?.classList.add('on');
+    // 同步顶部tab
+    const topTabs = document.querySelectorAll('.tab');
+    const tidMap = [0,'live',138,129,1,'game','music',160,188,223,217];
+    topTabs.forEach((b,i)=>b.classList.toggle('on', tidMap[i]===t));
+    tab(null, t);
+}
+
+function tabLive(el) {
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+    if(el) el.classList.add('on');
+    document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('on'));
+    document.getElementById('mainPage').style.display = 'none';
+    document.getElementById('livePageEl').classList.add('on');
+    document.getElementById('cg').innerHTML = CCTV.map(lc).join('');
+    document.getElementById('sg').innerHTML = SAT.map(lc).join('');
+    document.getElementById('kg').innerHTML = KIDS.map(lc).join('');
+}
+
+function tabLB(id) {
+    document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('on'));
+    document.getElementById(id)?.classList.add('on');
+    document.querySelectorAll('.tab')[1]?.classList.add('on');
+    document.getElementById('mainPage').style.display = 'none';
+    document.getElementById('livePageEl').classList.add('on');
+    document.getElementById('cg').innerHTML = CCTV.map(lc).join('');
+    document.getElementById('sg').innerHTML = SAT.map(lc).join('');
+    document.getElementById('kg').innerHTML = KIDS.map(lc).join('');
 }
 
 function play(bvid, title) {
-    document.getElementById('ptitle').textContent = title;
-    document.getElementById('pframe').src = `https://player.bilibili.com/player.html?bvid=${bvid}&autoplay=1&high_quality=1&danmaku=0&quality=120`;
-    document.getElementById('player').classList.add('show');
+    document.getElementById('pttl').textContent = title;
+    // 1080P 高清播放
+    document.getElementById('pfr').src = `https://player.bilibili.com/player.html?bvid=${bvid}&autoplay=1&high_quality=1&danmaku=0&qn=80`;
+    document.getElementById('player').classList.add('on');
     document.body.style.overflow = 'hidden';
 }
 
 function closeP() {
-    document.getElementById('player').classList.remove('show');
-    document.getElementById('pframe').src = '';
+    document.getElementById('player').classList.remove('on');
+    document.getElementById('pfr').src = '';
     document.body.style.overflow = '';
 }
 
@@ -407,32 +493,34 @@ function search() {
     if(q) window.open('https://search.bilibili.com/all?keyword='+encodeURIComponent(q),'_blank');
 }
 
+// 无限滚动
 window.addEventListener('scroll', async () => {
-    if(busy || document.getElementById('liveWrap').style.display!=='none') return;
-    if(window.innerHeight+window.scrollY >= document.body.offsetHeight-400) {
-        busy=true; page++;
-        try { render(await load(tid,page),true); } catch{}
-        busy=false;
+    if(busy) return;
+    if(document.getElementById('livePageEl').classList.contains('on')) return;
+    if(window.innerHeight+window.scrollY >= document.body.offsetHeight-500) {
+        busy = true; pg++;
+        try { render(await fetchBili(tid, pg), true); } catch {}
+        busy = false;
     }
 });
 
-// 直播
+// 直播数据
 const CCTV=[
-    {n:'CCTV-1',e:'📺',u:'https://www.yangshipin.cn/tv/home?cid=568'},
-    {n:'CCTV-2',e:'💰',u:'https://www.yangshipin.cn/tv/home?cid=569'},
-    {n:'CCTV-3',e:'🎭',u:'https://www.yangshipin.cn/tv/home?cid=570'},
-    {n:'CCTV-4',e:'🌏',u:'https://www.yangshipin.cn/tv/home?cid=571'},
-    {n:'CCTV-5',e:'⚽',u:'https://www.yangshipin.cn/tv/home?cid=572'},
-    {n:'CCTV-6',e:'🎬',u:'https://www.yangshipin.cn/tv/home?cid=573'},
-    {n:'CCTV-7',e:'🌾',u:'https://www.yangshipin.cn/tv/home?cid=574'},
-    {n:'CCTV-8',e:'🎞️',u:'https://www.yangshipin.cn/tv/home?cid=575'},
-    {n:'CCTV-9',e:'📽️',u:'https://www.yangshipin.cn/tv/home?cid=576'},
-    {n:'CCTV-10',e:'🔬',u:'https://www.yangshipin.cn/tv/home?cid=577'},
-    {n:'CCTV-11',e:'🎎',u:'https://www.yangshipin.cn/tv/home?cid=578'},
-    {n:'CCTV-12',e:'⚖️',u:'https://www.yangshipin.cn/tv/home?cid=579'},
+    {n:'CCTV-1 综合',e:'📺',u:'https://www.yangshipin.cn/tv/home?cid=568'},
+    {n:'CCTV-2 财经',e:'💰',u:'https://www.yangshipin.cn/tv/home?cid=569'},
+    {n:'CCTV-3 综艺',e:'🎭',u:'https://www.yangshipin.cn/tv/home?cid=570'},
+    {n:'CCTV-4 中文',e:'🌏',u:'https://www.yangshipin.cn/tv/home?cid=571'},
+    {n:'CCTV-5 体育',e:'⚽',u:'https://www.yangshipin.cn/tv/home?cid=572'},
+    {n:'CCTV-6 电影',e:'🎬',u:'https://www.yangshipin.cn/tv/home?cid=573'},
+    {n:'CCTV-7 国防',e:'🌾',u:'https://www.yangshipin.cn/tv/home?cid=574'},
+    {n:'CCTV-8 电视剧',e:'🎞️',u:'https://www.yangshipin.cn/tv/home?cid=575'},
+    {n:'CCTV-9 纪录',e:'📽️',u:'https://www.yangshipin.cn/tv/home?cid=576'},
+    {n:'CCTV-10 科教',e:'🔬',u:'https://www.yangshipin.cn/tv/home?cid=577'},
+    {n:'CCTV-11 戏曲',e:'🎎',u:'https://www.yangshipin.cn/tv/home?cid=578'},
+    {n:'CCTV-12 社会',e:'⚖️',u:'https://www.yangshipin.cn/tv/home?cid=579'},
 ];
 const SAT=[
-    {n:'湖南卫视',e:'🌟',u:'https://www.yangshipin.cn/tv/home?cid=698'},
+    {n:'湖南卫视',e:'🌟',u:'https://www.mgtv.com/live/1/'},
     {n:'浙江卫视',e:'🏊',u:'https://www.yangshipin.cn/tv/home?cid=702'},
     {n:'江苏卫视',e:'💫',u:'https://www.yangshipin.cn/tv/home?cid=700'},
     {n:'东方卫视',e:'🌆',u:'https://www.yangshipin.cn/tv/home?cid=703'},
@@ -445,28 +533,24 @@ const SAT=[
     {n:'天津卫视',e:'🎡',u:'https://www.yangshipin.cn/tv/home?cid=699'},
     {n:'辽宁卫视',e:'❄️',u:'https://www.yangshipin.cn/tv/home?cid=708'},
 ];
-
-const lc = c => `<div class="live-card" onclick="window.open('${c.u}','_blank')">
-    <span class="live-em">${c.e}</span>
-    <div class="live-nm">${c.n}</div>
-    <div class="live-tag"><div class="live-dot"></div>直播</div>
+const KIDS=[
+    {n:'CCTV少儿',e:'🧒',u:'https://www.yangshipin.cn/tv/home?cid=580'},
+    {n:'金鹰卡通',e:'🦅',u:'https://www.mgtv.com/live/4/'},
+    {n:'哈哈炫动',e:'🎠',u:'https://www.bilibili.com/v/animation/'},
+    {n:'卡酷动画',e:'🎪',u:'http://www.kakutv.com.cn/live/'},
+    {n:'B站动漫',e:'🎌',u:'https://www.bilibili.com/anime/'},
+    {n:'优酷少儿',e:'🌈',u:'https://youku.com/channel/webchild'},
+    {n:'爱奇艺少儿',e:'⭐',u:'https://www.iqiyi.com/kids/'},
+    {n:'腾讯少儿',e:'🐧',u:'https://v.qq.com/channel/cartoon'},
+];
+const lc = c => `<div class="lcard" onclick="window.open('${c.u}','_blank')">
+    <span class="lemo">${c.e}</span>
+    <div class="lname">${c.n}</div>
+    <div class="ltag">直播中</div>
 </div>`;
 
-function goLive(el, nid) {
-    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('on'));
-    if(el) el.classList.add('active');
-    if(nid) document.getElementById(nid)?.classList.add('on');
-    else document.getElementById('n1')?.classList.add('on');
-    document.getElementById('grid').style.display = 'none';
-    document.getElementById('liveWrap').style.display = 'block';
-    document.getElementById('cg').innerHTML = CCTV.map(lc).join('');
-    document.getElementById('sg').innerHTML = SAT.map(lc).join('');
-    // 同步顶部tab
-    document.querySelectorAll('.tab')[1]?.classList.add('active');
-}
-
-go(null, 0, 'n0');
+// 初始化
+tab(null, 0);
 </script>
 </body>
 </html>
