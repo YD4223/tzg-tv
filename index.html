@@ -5,97 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>童真阁</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📺</text></svg>">
-    <!-- HLS.js 播放器 -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        :root {
-            --bg: #f7f8fa; --card: #fff; --border: #e8eaed;
-            --text: #1a1a2e; --text2: #5a6070; --text3: #9ca3b8;
-            --accent: #4f6ef7; --live: #ef4444;
-            --top-bg: rgba(247,248,250,0.95);
-            --nav-bg: rgba(247,248,250,0.97);
-        }
-        html.dark {
-            --bg: #111318; --card: #1a1d24; --border: #22252e;
-            --text: #f0f0f0; --text2: #9ca3af; --text3: #4b5563;
-            --top-bg: rgba(17,19,24,0.95);
-            --nav-bg: rgba(17,19,24,0.97);
-        }
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { font-family:-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
-
-        /* 顶部 */
-        .top { position:sticky; top:0; z-index:100; background:var(--top-bg); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:0 20px; }
-        .top-row { max-width:1100px; margin:0 auto; display:flex; align-items:center; gap:12px; height:60px; }
-        .logo { font-size:1.2rem; font-weight:800; white-space:nowrap; }
-        .logo span { color:var(--accent); }
-        .search { flex:1; display:flex; gap:8px; align-items:center; }
-        .search input { flex:1; padding:9px 16px; border:1.5px solid var(--border); border-radius:100px; background:var(--card); color:var(--text); font-size:0.88rem; outline:none; transition:border-color 0.2s; font-family:inherit; }
-        .search input:focus { border-color:var(--accent); }
-        .search input::placeholder { color:var(--text3); }
-        .search button { width:36px; height:36px; border-radius:50%; background:var(--accent); border:none; color:#fff; cursor:pointer; font-size:0.9rem; flex-shrink:0; }
-        .theme { width:36px; height:36px; border-radius:50%; border:1.5px solid var(--border); background:var(--card); cursor:pointer; font-size:1rem; flex-shrink:0; }
-
-        /* 分类 */
-        .cats { max-width:1100px; margin:0 auto; display:flex; gap:4px; overflow-x:auto; padding:10px 0 12px; scrollbar-width:none; }
-        .cats::-webkit-scrollbar { display:none; }
-        .cat { padding:6px 16px; border-radius:100px; font-size:0.82rem; font-weight:500; cursor:pointer; white-space:nowrap; flex-shrink:0; color:var(--text2); background:transparent; border:none; transition:all 0.2s; }
-        .cat:hover { background:var(--card); color:var(--text); }
-        .cat.on { background:var(--accent); color:#fff; }
-
-        /* 频道网格 */
-        .page { max-width:1100px; margin:0 auto; padding:20px 20px 90px; }
-        .sec-title { font-size:0.82rem; font-weight:700; color:var(--text3); letter-spacing:1px; text-transform:uppercase; margin-bottom:14px; margin-top:24px; display:flex; align-items:center; gap:8px; }
-        .sec-title:first-child { margin-top:0; }
-        .sec-bar { width:3px; height:14px; border-radius:2px; background:var(--accent); }
-        .sec-bar.red { background:var(--live); }
-        .sec-bar.gold { background:#f59e0b; }
-
-        .ch-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:12px; }
-        .ch-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px 10px 14px; text-align:center; cursor:pointer; transition:all 0.2s; }
-        .ch-card:hover { transform:translateY(-3px); border-color:var(--accent); box-shadow:0 6px 20px rgba(0,0,0,0.1); }
-        .ch-card:active { transform:scale(0.97); }
-        .ch-em { font-size:2rem; margin-bottom:8px; display:block; }
-        .ch-name { font-size:0.8rem; font-weight:600; color:var(--text); margin-bottom:7px; }
-        .ch-tag { display:inline-flex; align-items:center; gap:3px; padding:2px 9px; border-radius:100px; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.15); font-size:0.62rem; color:var(--live); font-weight:700; }
-        .ch-tag::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--live); animation:bl 1.2s infinite; }
-        @keyframes bl { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
+        :root{--bg:#f7f8fa;--card:#fff;--border:#e8eaed;--text:#1a1a2e;--text2:#5a6070;--text3:#9ca3b8;--accent:#4f6ef7;--live:#ef4444;--top-bg:rgba(247,248,250,0.96);--nav-bg:rgba(247,248,250,0.97);}
+        html.dark{--bg:#111318;--card:#1a1d24;--border:#22252e;--text:#f0f0f0;--text2:#9ca3af;--text3:#4b5563;--top-bg:rgba(17,19,24,0.96);--nav-bg:rgba(17,19,24,0.97);}
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+        body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+        .top{position:sticky;top:0;z-index:100;background:var(--top-bg);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 20px;}
+        .top-row{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px;height:60px;}
+        .logo{font-size:1.2rem;font-weight:800;white-space:nowrap;}
+        .logo span{color:var(--accent);}
+        .search{flex:1;display:flex;gap:8px;align-items:center;}
+        .search input{flex:1;padding:9px 16px;border:1.5px solid var(--border);border-radius:100px;background:var(--card);color:var(--text);font-size:0.88rem;outline:none;transition:border-color 0.2s;font-family:inherit;}
+        .search input:focus{border-color:var(--accent);}
+        .search input::placeholder{color:var(--text3);}
+        .search button{width:36px;height:36px;border-radius:50%;background:var(--accent);border:none;color:#fff;cursor:pointer;font-size:0.9rem;flex-shrink:0;}
+        .theme{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);background:var(--card);cursor:pointer;font-size:1rem;flex-shrink:0;}
+        .cats{max-width:1100px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:10px 0 12px;scrollbar-width:none;}
+        .cats::-webkit-scrollbar{display:none;}
+        .cat{padding:6px 16px;border-radius:100px;font-size:0.82rem;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0;color:var(--text2);background:transparent;border:none;transition:all 0.2s;}
+        .cat:hover{background:var(--card);color:var(--text);}
+        .cat.on{background:var(--accent);color:#fff;}
+        .page{max-width:1100px;margin:0 auto;padding:20px 20px 90px;}
+        .sec-title{font-size:0.82rem;font-weight:700;color:var(--text3);letter-spacing:1px;margin-bottom:14px;margin-top:24px;display:flex;align-items:center;gap:8px;}
+        .sec-title:first-child{margin-top:0;}
+        .sec-bar{width:3px;height:14px;border-radius:2px;background:var(--accent);}
+        .sec-bar.red{background:var(--live);}
+        .sec-bar.gold{background:#f59e0b;}
+        .sec-bar.green{background:#10b981;}
+        .ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;}
+        .ch-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 8px 12px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
+        .ch-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 6px 20px rgba(0,0,0,0.1);}
+        .ch-card:active{transform:scale(0.97);}
+        .ch-logo{width:48px;height:48px;border-radius:10px;object-fit:contain;margin:0 auto 8px;display:block;background:var(--bg);}
+        .ch-logo-em{font-size:2rem;margin-bottom:8px;display:block;}
+        .ch-name{font-size:0.78rem;font-weight:600;color:var(--text);margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        .ch-tag{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:100px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.15);font-size:0.6rem;color:var(--live);font-weight:700;}
+        .ch-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--live);animation:bl 1.2s infinite;}
+        .ch-hd{position:absolute;top:8px;right:8px;font-size:0.55rem;font-weight:700;padding:1px 5px;border-radius:4px;background:rgba(79,110,247,0.12);color:var(--accent);}
+        @keyframes bl{0%,100%{opacity:1}50%{opacity:0.3}}
         /* 播放器 */
-        .player { display:none; position:fixed; inset:0; background:#000; z-index:500; flex-direction:column; }
-        .player.on { display:flex; }
-        .pbar { display:flex; align-items:center; gap:12px; padding:12px 18px; background:#111; border-bottom:1px solid #222; flex-shrink:0; }
-        .pback { background:rgba(255,255,255,0.1); border:none; color:#ccc; padding:7px 16px; border-radius:8px; cursor:pointer; font-size:0.85rem; font-family:inherit; transition:background 0.2s; }
-        .pback:hover { background:rgba(255,255,255,0.18); color:#fff; }
-        .ptitle { flex:1; font-size:0.9rem; font-weight:600; color:#e0e0e0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-        .pbody { flex:1; position:relative; background:#000; }
-        video { width:100%; height:100%; object-fit:contain; }
-        .perr { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:16px; color:#888; }
-        .perr.on { display:flex; }
-        .perr-icon { font-size:3rem; }
-        .perr-text { font-size:0.9rem; }
-        .perr-retry { padding:10px 24px; background:var(--accent); border:none; color:#fff; border-radius:8px; cursor:pointer; font-size:0.88rem; }
-
+        .player{display:none;position:fixed;inset:0;background:#000;z-index:500;flex-direction:column;}
+        .player.on{display:flex;}
+        .pbar{display:flex;align-items:center;gap:12px;padding:12px 18px;background:#111;border-bottom:1px solid #222;flex-shrink:0;}
+        .pback{background:rgba(255,255,255,0.1);border:none;color:#ccc;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:0.85rem;font-family:inherit;}
+        .pback:hover{background:rgba(255,255,255,0.18);color:#fff;}
+        .ptitle{flex:1;font-size:0.9rem;font-weight:600;color:#e0e0e0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        .pstatus{font-size:0.75rem;color:#666;white-space:nowrap;}
+        .pbody{flex:1;position:relative;background:#000;display:flex;align-items:center;justify-content:center;}
+        video{width:100%;height:100%;object-fit:contain;}
+        .pload{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#888;pointer-events:none;}
+        .pload.hide{display:none;}
+        .spin{width:36px;height:36px;border:3px solid #333;border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .perr{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#888;}
+        .perr.on{display:flex;}
+        .perr-icon{font-size:3rem;}
+        .perr-msg{font-size:0.88rem;text-align:center;padding:0 20px;}
+        .perr-retry{padding:10px 24px;background:var(--accent);border:none;color:#fff;border-radius:8px;cursor:pointer;font-size:0.88rem;}
         /* 底部导航 */
-        .bnav { position:fixed; bottom:0; left:0; right:0; z-index:100; background:var(--nav-bg); backdrop-filter:blur(20px); border-top:1px solid var(--border); display:flex; padding:6px 0 max(6px,env(safe-area-inset-bottom)); }
-        .bitem { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; color:var(--text3); padding:5px 0; transition:color 0.2s; }
-        .bitem.on { color:var(--accent); }
-        .bitem:active { opacity:0.7; }
-        .bi { font-size:1.25rem; }
-        .bl { font-size:0.6rem; font-weight:500; }
-
-        @media(max-width:600px) {
-            .ch-grid { grid-template-columns:repeat(3,1fr); gap:10px; }
-            .ch-card { padding:14px 6px 12px; }
-            .ch-em { font-size:1.7rem; }
-        }
-        @media(min-width:900px) {
-            .ch-grid { grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); }
-        }
+        .bnav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--nav-bg);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding:6px 0 max(6px,env(safe-area-inset-bottom));}
+        .bitem{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;color:var(--text3);padding:5px 0;transition:color 0.2s;}
+        .bitem.on{color:var(--accent);}
+        .bitem:active{opacity:0.7;}
+        .bi{font-size:1.25rem;}
+        .bl{font-size:0.6rem;font-weight:500;}
+        @media(max-width:600px){.ch-grid{grid-template-columns:repeat(3,1fr);gap:10px;}.ch-card{padding:12px 6px 10px;}}
+        @media(min-width:900px){.ch-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}}
     </style>
 </head>
 <body>
-
 <div class="top">
     <div class="top-row">
         <div class="logo">童<span>真</span>阁</div>
@@ -105,7 +84,7 @@
         </div>
         <button class="theme" id="themeBtn" onclick="toggleTheme()">🌙</button>
     </div>
-    <div class="cats" id="cats">
+    <div class="cats">
         <div class="cat on" onclick="showCat(this,'all')">全部</div>
         <div class="cat" onclick="showCat(this,'cctv')">央视</div>
         <div class="cat" onclick="showCat(this,'sat')">卫视</div>
@@ -115,133 +94,182 @@
         <div class="cat" onclick="showCat(this,'news')">新闻</div>
     </div>
 </div>
-
 <div class="page" id="mainPage"></div>
-
 <!-- 播放器 -->
 <div class="player" id="player">
     <div class="pbar">
         <button class="pback" onclick="closePlayer()">← 返回</button>
         <div class="ptitle" id="ptitle"></div>
+        <div class="pstatus" id="pstatus">连接中...</div>
     </div>
     <div class="pbody">
         <video id="video" controls autoplay playsinline></video>
+        <div class="pload" id="pload"><div class="spin"></div><div>信号加载中...</div></div>
         <div class="perr" id="perr">
             <div class="perr-icon">📡</div>
-            <div class="perr-text">信号加载中，请稍候...</div>
-            <button class="perr-retry" onclick="retryPlay()">重新连接</button>
+            <div class="perr-msg" id="perrmsg">当前线路不可用，正在切换备用线路...</div>
+            <button class="perr-retry" onclick="retryNext()">切换线路重试</button>
         </div>
     </div>
 </div>
-
 <!-- 底部导航 -->
 <div class="bnav">
-    <div class="bitem on" onclick="showCatB('all',this)"><span class="bi">📺</span><span class="bl">全部</span></div>
-    <div class="bitem" onclick="showCatB('cctv',this)"><span class="bi">🏛️</span><span class="bl">央视</span></div>
-    <div class="bitem" onclick="showCatB('sat',this)"><span class="bi">📡</span><span class="bl">卫视</span></div>
-    <div class="bitem" onclick="showCatB('kids',this)"><span class="bi">🧒</span><span class="bl">少儿</span></div>
-    <div class="bitem" onclick="showCatB('sport',this)"><span class="bi">⚽</span><span class="bl">体育</span></div>
+    <div class="bitem on" id="b0" onclick="showCatB('all',this)"><span class="bi">📺</span><span class="bl">全部</span></div>
+    <div class="bitem" id="b1" onclick="showCatB('cctv',this)"><span class="bi">🏛️</span><span class="bl">央视</span></div>
+    <div class="bitem" id="b2" onclick="showCatB('sat',this)"><span class="bi">📡</span><span class="bl">卫视</span></div>
+    <div class="bitem" id="b3" onclick="showCatB('kids',this)"><span class="bi">🧒</span><span class="bl">少儿</span></div>
+    <div class="bitem" id="b4" onclick="showCatB('sport',this)"><span class="bi">⚽</span><span class="bl">体育</span></div>
 </div>
-
 <script>
-// ===== 频道数据（使用公开IPTV直播源）=====
+// 频道数据（多线路备用）
 const CHANNELS = [
-    // 央视
-    {name:'CCTV-1 综合', em:'1️⃣', cat:'cctv', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'CCTV-2 财经', em:'💰', cat:'cctv', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'CCTV-3 综艺', em:'🎭', cat:'cctv', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'CCTV-4 中文', em:'🌏', cat:'cctv', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'CCTV-5 体育', em:'⚽', cat:['cctv','sport'], url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'CCTV-6 电影', em:'🎬', cat:['cctv','movie'], url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'CCTV-7 国防', em:'🌾', cat:'cctv', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'CCTV-8 电视剧',em:'🎞️', cat:['cctv','movie'], url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'CCTV-9 纪录', em:'📽️', cat:'cctv', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'CCTV-10 科教',em:'🔬', cat:'cctv', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'CCTV-11 戏曲',em:'🎎', cat:'cctv', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'CCTV-12 社会',em:'⚖️', cat:'cctv', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'CCTV-13 新闻',em:'📰', cat:['cctv','news'], url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'CCTV-14 少儿',em:'🧒', cat:['cctv','kids'], url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'CCTV-15 音乐',em:'🎵', cat:'cctv', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    // 卫视
-    {name:'湖南卫视', em:'🌟', cat:'sat', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'浙江卫视', em:'🏊', cat:'sat', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'江苏卫视', em:'💫', cat:'sat', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'东方卫视', em:'🌆', cat:'sat', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'北京卫视', em:'🏛️', cat:'sat', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'广东卫视', em:'🌺', cat:'sat', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'安徽卫视', em:'🎪', cat:'sat', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'深圳卫视', em:'🏙️', cat:'sat', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'山东卫视', em:'⛰️', cat:'sat', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'四川卫视', em:'🐼', cat:'sat', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'天津卫视', em:'🎡', cat:'sat', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'辽宁卫视', em:'❄️', cat:'sat', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    // 少儿
-    {name:'CCTV少儿', em:'🧒', cat:'kids', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'金鹰卡通', em:'🦅', cat:'kids', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'卡酷动画', em:'🎠', cat:'kids', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'哈哈炫动', em:'🌈', cat:'kids', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    // 体育
-    {name:'CCTV体育', em:'⚽', cat:'sport', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'CCTV体育+',em:'🏆', cat:'sport', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    // 新闻
-    {name:'CCTV新闻', em:'📰', cat:'news', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
-    {name:'凤凰资讯', em:'🦅', cat:'news', url:'https://live.cgtn.com/1000/prog_index.m3u8'},
+    // ===== 央视 =====
+    {name:'CCTV-1 综合', em:'1️⃣', cat:'cctv', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1001_1.m3u8',
+           'http://39.135.133.132/ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226016/index.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8']},
+    {name:'CCTV-2 财经', em:'💰', cat:'cctv', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1002_1.m3u8',
+           'http://39.135.133.177/ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221225588/index.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv2hd.m3u8']},
+    {name:'CCTV-3 综艺', em:'🎭', cat:'cctv', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1003_1.m3u8',
+           'http://39.135.135.41/ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226021/index.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv3hd.m3u8']},
+    {name:'CCTV-4 中文', em:'🌏', cat:'cctv', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1004_1.m3u8',
+           'http://39.135.135.50/ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226007/index.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv4hd.m3u8']},
+    {name:'CCTV-5 体育', em:'⚽', cat:['cctv','sport'], hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1005_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv5hd.m3u8']},
+    {name:'CCTV-6 电影', em:'🎬', cat:['cctv','movie'], hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1006_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv6hd.m3u8']},
+    {name:'CCTV-7 国防', em:'🌾', cat:'cctv', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1007_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv7hd.m3u8']},
+    {name:'CCTV-8 电视剧',em:'🎞️', cat:['cctv','movie'], hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1008_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv8hd.m3u8']},
+    {name:'CCTV-9 纪录', em:'📽️', cat:'cctv', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1009_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv9hd.m3u8']},
+    {name:'CCTV-10 科教',em:'🔬', cat:'cctv', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1010_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv10hd.m3u8']},
+    {name:'CCTV-11 戏曲',em:'🎎', cat:'cctv', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1011_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv11.m3u8']},
+    {name:'CCTV-12 社会',em:'⚖️', cat:'cctv', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1012_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv12hd.m3u8']},
+    {name:'CCTV-13 新闻',em:'📰', cat:['cctv','news'], hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1013_1.m3u8',
+           'https://cdn3.163189.xyz/163189/cctv13',
+           'http://ivi.bupt.edu.cn/hls/cctv13hd.m3u8']},
+    {name:'CCTV-14 少儿',em:'🧒', cat:['cctv','kids'], hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1014_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv14hd.m3u8']},
+    {name:'CCTV-15 音乐',em:'🎵', cat:'cctv', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1015_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv15hd.m3u8']},
+    {name:'CCTV 4K超高清',em:'✨', cat:'cctv', hd:'4K',
+     urls:['http://3501776.xyz:35455/gaoma/cctv4k.m3u8']},
+
+    // ===== 卫视 =====
+    {name:'湖南卫视', em:'🌟', cat:'sat', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1101_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/hunanhd.m3u8']},
+    {name:'浙江卫视', em:'🏊', cat:'sat', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1102_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/zjhd.m3u8']},
+    {name:'江苏卫视', em:'💫', cat:'sat', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1103_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/jshd.m3u8']},
+    {name:'东方卫视', em:'🌆', cat:'sat', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1104_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/dfhd.m3u8']},
+    {name:'北京卫视', em:'🏛️', cat:'sat', hd:'HD',
+     urls:['http://ivi.bupt.edu.cn/hls/btv1hd.m3u8',
+           'http://218.13.14.6:60050/tsfile/live/1105_1.m3u8']},
+    {name:'广东卫视', em:'🌺', cat:'sat', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1106_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/gdhd.m3u8']},
+    {name:'安徽卫视', em:'🎪', cat:'sat', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1107_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/ahhd.m3u8']},
+    {name:'深圳卫视', em:'🏙️', cat:'sat', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1108_1.m3u8']},
+    {name:'山东卫视', em:'⛰️', cat:'sat', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1109_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/sdhd.m3u8']},
+    {name:'四川卫视', em:'🐼', cat:'sat', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1110_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/schd.m3u8']},
+    {name:'天津卫视', em:'🎡', cat:'sat', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1111_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/tjhd.m3u8']},
+    {name:'辽宁卫视', em:'❄️', cat:'sat', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1112_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/lnhd.m3u8']},
+    {name:'湖北卫视', em:'🌸', cat:'sat', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1113_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/hbhd.m3u8']},
+    {name:'河南卫视', em:'🏯', cat:'sat', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1114_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/hnhd.m3u8']},
+
+    // ===== 少儿 =====
+    {name:'CCTV少儿', em:'🧒', cat:'kids', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1014_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv14hd.m3u8']},
+    {name:'金鹰卡通', em:'🦅', cat:'kids', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1201_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/jyhd.m3u8']},
+    {name:'卡酷动画', em:'🎠', cat:'kids', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1202_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/kakuhd.m3u8']},
+    {name:'哈哈炫动', em:'🌈', cat:'kids', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1203_1.m3u8']},
+
+    // ===== 体育 =====
+    {name:'CCTV体育', em:'⚽', cat:'sport', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1005_1.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv5hd.m3u8']},
+    {name:'CCTV体育+',em:'🏆', cat:'sport', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1005_2.m3u8',
+           'http://ivi.bupt.edu.cn/hls/cctv5phd.m3u8']},
+    {name:'五星体育', em:'🥇', cat:'sport', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1301_1.m3u8']},
+
+    // ===== 新闻 =====
+    {name:'CCTV新闻', em:'📰', cat:'news', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1013_1.m3u8',
+           'https://cdn3.163189.xyz/163189/cctv13']},
+    {name:'凤凰资讯', em:'🦅', cat:'news', hd:'HD',
+     urls:['http://218.13.14.6:60050/tsfile/live/1401_1.m3u8']},
 ];
 
-// 真实直播源（公开IPTV源）
-const REAL_URLS = {
-    'CCTV-1 综合':  'http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8',
-    'CCTV-2 财经':  'http://ivi.bupt.edu.cn/hls/cctv2hd.m3u8',
-    'CCTV-3 综艺':  'http://ivi.bupt.edu.cn/hls/cctv3hd.m3u8',
-    'CCTV-4 中文':  'http://ivi.bupt.edu.cn/hls/cctv4hd.m3u8',
-    'CCTV-5 体育':  'http://ivi.bupt.edu.cn/hls/cctv5hd.m3u8',
-    'CCTV-6 电影':  'http://ivi.bupt.edu.cn/hls/cctv6hd.m3u8',
-    'CCTV-7 国防':  'http://ivi.bupt.edu.cn/hls/cctv7hd.m3u8',
-    'CCTV-8 电视剧':'http://ivi.bupt.edu.cn/hls/cctv8hd.m3u8',
-    'CCTV-9 纪录':  'http://ivi.bupt.edu.cn/hls/cctv9hd.m3u8',
-    'CCTV-10 科教': 'http://ivi.bupt.edu.cn/hls/cctv10hd.m3u8',
-    'CCTV-11 戏曲': 'http://ivi.bupt.edu.cn/hls/cctv11.m3u8',
-    'CCTV-12 社会': 'http://ivi.bupt.edu.cn/hls/cctv12hd.m3u8',
-    'CCTV-13 新闻': 'https://cdn3.163189.xyz/163189/cctv13',
-    'CCTV-14 少儿': 'http://ivi.bupt.edu.cn/hls/cctv14hd.m3u8',
-    'CCTV-15 音乐': 'http://ivi.bupt.edu.cn/hls/cctv15hd.m3u8',
-    '北京卫视':     'http://ivi.bupt.edu.cn/hls/btv1hd.m3u8',
-    'CCTV少儿':     'http://ivi.bupt.edu.cn/hls/cctv14hd.m3u8',
-    'CCTV体育':     'http://ivi.bupt.edu.cn/hls/cctv5hd.m3u8',
-    'CCTV新闻':     'https://cdn3.163189.xyz/163189/cctv13',
+const SECS = {
+    cctv: {t:'央视频道', b:''},
+    sat:  {t:'卫视频道', b:'red'},
+    kids: {t:'少儿动画', b:'gold'},
+    sport:{t:'体育频道', b:'green'},
+    movie:{t:'影视频道', b:''},
+    news: {t:'新闻频道', b:''},
 };
 
-// 用真实URL替换
-CHANNELS.forEach(ch => {
-    if (REAL_URLS[ch.name]) ch.url = REAL_URLS[ch.name];
-});
-
-// 分组标题
-const SEC_NAMES = {
-    cctv: {title:'央视频道', bar:''},
-    sat:  {title:'卫视频道', bar:'red'},
-    kids: {title:'少儿动画', bar:'gold'},
-    sport:{title:'体育频道', bar:''},
-    movie:{title:'影视频道', bar:''},
-    news: {title:'新闻频道', bar:''},
-};
-
-let currentUrl = '', currentName = '';
-let hls = null;
-
-function getChsByGroup(cat) {
-    if (cat === 'all') {
-        // 按分组显示
-        return null;
-    }
-    return CHANNELS.filter(c => Array.isArray(c.cat) ? c.cat.includes(cat) : c.cat === cat);
-}
+let hls = null, curCh = null, curUrlIdx = 0;
 
 function chCard(ch) {
-    return `<div class="ch-card" onclick="playChannel('${ch.url}','${ch.name}')">
-        <span class="ch-em">${ch.em}</span>
+    const logo = `https://live.fanmingming.cn/tv/${ch.name.replace(/CCTV-/,'CCTV').replace(/ .*/,'')}.png`;
+    return `<div class="ch-card" onclick="playCh(${CHANNELS.indexOf(ch)})">
+        <img class="ch-logo" src="${logo}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <span class="ch-logo-em" style="display:none">${ch.em}</span>
         <div class="ch-name">${ch.name}</div>
         <div class="ch-tag">直播中</div>
+        ${ch.hd ? `<div class="ch-hd">${ch.hd}</div>` : ''}
     </div>`;
 }
 
@@ -251,8 +279,8 @@ function renderAll() {
     groups.forEach(g => {
         const chs = CHANNELS.filter(c => Array.isArray(c.cat) ? c.cat.includes(g) : c.cat === g);
         if (!chs.length) return;
-        const s = SEC_NAMES[g];
-        html += `<div class="sec-title"><div class="sec-bar ${s.bar}"></div>${s.title}</div>`;
+        const s = SECS[g];
+        html += `<div class="sec-title"><div class="sec-bar ${s.b}"></div>${s.t}</div>`;
         html += `<div class="ch-grid">${chs.map(chCard).join('')}</div>`;
     });
     document.getElementById('mainPage').innerHTML = html;
@@ -260,10 +288,10 @@ function renderAll() {
 
 function renderCat(cat) {
     const chs = CHANNELS.filter(c => Array.isArray(c.cat) ? c.cat.includes(cat) : c.cat === cat);
-    const s = SEC_NAMES[cat];
-    let html = `<div class="sec-title"><div class="sec-bar ${s.bar}"></div>${s.title}</div>`;
-    html += `<div class="ch-grid">${chs.map(chCard).join('')}</div>`;
-    document.getElementById('mainPage').innerHTML = html;
+    const s = SECS[cat];
+    document.getElementById('mainPage').innerHTML =
+        `<div class="sec-title"><div class="sec-bar ${s.b}"></div>${s.t}</div>` +
+        `<div class="ch-grid">${chs.map(chCard).join('')}</div>`;
 }
 
 function showCat(el, cat) {
@@ -276,48 +304,67 @@ function showCat(el, cat) {
 function showCatB(cat, el) {
     document.querySelectorAll('.bitem').forEach(b=>b.classList.remove('on'));
     el.classList.add('on');
-    // 同步顶部
-    const catMap = ['all','cctv','sat','kids','sport','movie','news'];
+    const catMap = ['all','cctv','sat','kids','sport'];
     document.querySelectorAll('.cat').forEach((b,i)=>b.classList.toggle('on', catMap[i]===cat));
     cat === 'all' ? renderAll() : renderCat(cat);
     window.scrollTo(0,0);
 }
 
-function playChannel(url, name) {
-    currentUrl = url;
-    currentName = name;
-    document.getElementById('ptitle').textContent = name + ' · 直播';
+function playCh(idx) {
+    curCh = CHANNELS[idx];
+    curUrlIdx = 0;
+    document.getElementById('ptitle').textContent = curCh.name + ' · 直播';
     document.getElementById('player').classList.add('on');
     document.body.style.overflow = 'hidden';
-    document.getElementById('perr').classList.remove('on');
-    startPlay(url);
+    startPlay();
 }
 
-function startPlay(url) {
+function startPlay() {
     const video = document.getElementById('video');
+    const url = curCh.urls[curUrlIdx];
+    document.getElementById('pload').classList.remove('hide');
+    document.getElementById('perr').classList.remove('on');
+    document.getElementById('pstatus').textContent = `线路 ${curUrlIdx+1}/${curCh.urls.length}`;
+
     if (hls) { hls.destroy(); hls = null; }
 
+    const onReady = () => document.getElementById('pload').classList.add('hide');
+    const onErr = () => {
+        if (curUrlIdx + 1 < curCh.urls.length) {
+            curUrlIdx++;
+            document.getElementById('perrmsg').textContent = `线路${curUrlIdx}不可用，正在切换线路${curUrlIdx+1}...`;
+            document.getElementById('perr').classList.add('on');
+            setTimeout(startPlay, 1500);
+        } else {
+            document.getElementById('pload').classList.add('hide');
+            document.getElementById('perrmsg').textContent = '所有线路均不可用，请稍后重试';
+            document.getElementById('perr').classList.add('on');
+        }
+    };
+
     if (Hls.isSupported()) {
-        hls = new Hls({ enableWorker: true, lowLatencyMode: true });
+        hls = new Hls({enableWorker:true, lowLatencyMode:true, maxBufferLength:10});
         hls.loadSource(url);
         hls.attachMedia(video);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => video.play().catch(()=>{}));
-        hls.on(Hls.Events.ERROR, (e, data) => {
-            if (data.fatal) {
-                document.getElementById('perr').classList.add('on');
-            }
-        });
+        hls.on(Hls.Events.MANIFEST_PARSED, () => { onReady(); video.play().catch(()=>{}); });
+        hls.on(Hls.Events.ERROR, (e, d) => { if (d.fatal) onErr(); });
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = url;
+        video.oncanplay = onReady;
+        video.onerror = onErr;
         video.play().catch(()=>{});
     } else {
-        document.getElementById('perr').classList.add('on');
+        onErr();
     }
 }
 
-function retryPlay() {
-    document.getElementById('perr').classList.remove('on');
-    startPlay(currentUrl);
+function retryNext() {
+    if (curUrlIdx + 1 < curCh.urls.length) {
+        curUrlIdx++;
+    } else {
+        curUrlIdx = 0;
+    }
+    startPlay();
 }
 
 function closePlayer() {
@@ -331,11 +378,9 @@ function doSearch() {
     const q = document.getElementById('si').value.trim().toLowerCase();
     if (!q) { renderAll(); return; }
     const res = CHANNELS.filter(c => c.name.toLowerCase().includes(q));
-    if (!res.length) {
-        document.getElementById('mainPage').innerHTML = '<div style="padding:60px 0;text-align:center;color:var(--text3)">没有找到相关频道</div>';
-        return;
-    }
-    document.getElementById('mainPage').innerHTML = `<div class="ch-grid">${res.map(chCard).join('')}</div>`;
+    document.getElementById('mainPage').innerHTML = res.length
+        ? `<div class="ch-grid">${res.map(chCard).join('')}</div>`
+        : '<div style="padding:60px 0;text-align:center;color:var(--text3)">没有找到相关频道</div>';
 }
 
 function toggleTheme() {
@@ -348,7 +393,6 @@ if (localStorage.getItem('theme') === 'dark') {
     document.getElementById('themeBtn').textContent = '☀️';
 }
 
-// 初始化
 renderAll();
 </script>
 </body>
